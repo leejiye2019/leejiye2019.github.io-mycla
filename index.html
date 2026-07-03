@@ -285,6 +285,13 @@ input,textarea,select,button{font-family:'Outfit','Noto Sans KR',sans-serif;}
       <div class="f"><label>이메일</label><input type="email" id="li-email" placeholder="teacher@school.com"></div>
       <div class="f"><label>비밀번호</label><input type="password" id="li-pw" placeholder="••••••••"></div>
       <button class="btn-blk" id="btn-login" onclick="login()">로그인</button>
+      <button class="btn-blk" id="btn-google" onclick="loginGoogle()" style="background:#fff;color:var(--ink);border:1.5px solid var(--border);margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+        Google로 계속하기
+      </button>
+      <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--ink3);font-family:'Noto Sans KR',sans-serif;">
+        <span style="cursor:pointer;text-decoration:underline" onclick="resetPw()">비밀번호를 잊으셨나요?</span>
+      </div>
       <div class="auth-msg err" id="li-msg"></div>
     </div>
     <div id="form-su" style="display:none">
@@ -354,6 +361,32 @@ input,textarea,select,button{font-family:'Outfit','Noto Sans KR',sans-serif;}
           <input type="time" id="mc-ts" style="flex:1;padding:9px 11px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:13px;outline:none;background:var(--cream)">
           <span>~</span>
           <input type="time" id="mc-te" style="flex:1;padding:9px 11px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:13px;outline:none;background:var(--cream)">
+        </div>
+      </div>
+      <div class="mf">
+        <label>수업 기간</label>
+        <div class="period-tabs" style="display:flex;gap:4px;margin-bottom:10px;">
+          <button type="button" class="period-tab on" id="pt-range" onclick="switchPeriodTab('range')" style="flex:1;padding:7px;border-radius:8px;border:1.5px solid var(--border);font-size:12px;font-weight:500;cursor:pointer;background:var(--ink);color:#fff;font-family:'Noto Sans KR',sans-serif;">기간 설정</button>
+          <button type="button" class="period-tab" id="pt-dates" onclick="switchPeriodTab('dates')" style="flex:1;padding:7px;border-radius:8px;border:1.5px solid var(--border);font-size:12px;font-weight:500;cursor:pointer;background:var(--cream);color:var(--ink2);font-family:'Noto Sans KR',sans-serif;">특정 날짜</button>
+          <button type="button" class="period-tab" id="pt-always" onclick="switchPeriodTab('always')" style="flex:1;padding:7px;border-radius:8px;border:1.5px solid var(--border);font-size:12px;font-weight:500;cursor:pointer;background:var(--cream);color:var(--ink2);font-family:'Noto Sans KR',sans-serif;">기간 없음</button>
+        </div>
+        <div id="period-range">
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="date" id="mc-date-start" style="flex:1;padding:9px 11px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:13px;outline:none;background:var(--cream);">
+            <span style="font-size:12px;color:var(--ink3);font-family:'Noto Sans KR',sans-serif;">~</span>
+            <input type="date" id="mc-date-end" style="flex:1;padding:9px 11px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:13px;outline:none;background:var(--cream);">
+          </div>
+        </div>
+        <div id="period-dates" style="display:none;">
+          <p style="font-size:12px;color:var(--ink3);margin-bottom:8px;font-family:'Noto Sans KR',sans-serif;">날짜를 하나씩 추가하세요</p>
+          <div style="display:flex;gap:6px;margin-bottom:8px;">
+            <input type="date" id="mc-single-date" style="flex:1;padding:9px 11px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:13px;outline:none;background:var(--cream);">
+            <button type="button" onclick="addSpecificDate()" style="padding:9px 14px;background:var(--ink);color:#fff;border:none;border-radius:var(--r-sm);font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">추가</button>
+          </div>
+          <div id="mc-dates-list" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+        </div>
+        <div id="period-always" style="display:none;">
+          <p style="font-size:13px;color:var(--ink3);font-family:'Noto Sans KR',sans-serif;">요일이 설정된 경우 캘린더 전체에 표시돼요.</p>
         </div>
       </div>
       <div class="mf"><label>강의실</label><input type="text" id="mc-room" placeholder="예: 6305"></div>
@@ -445,9 +478,9 @@ input,textarea,select,button{font-family:'Outfit','Noto Sans KR',sans-serif;}
 
 <!-- Firebase SDK -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getDatabase, ref, set, get, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, set, get, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCxQxZwfQwsMYum1OPIO6E2DUT1LMIy4I8",
@@ -467,6 +500,8 @@ const db = getDatabase(app);
 var U = null;
 var D = { classes:{}, students:{}, journals:{}, profile:{} };
 var curClass = null, curDtab = 'overview';
+var periodTab = 'range';
+var specificDates = [];
 var selColor = '#F2A96A', selJCls = [];
 var calY = new Date().getFullYear(), calM = new Date().getMonth();
 var selDate = new Date(), stuFilter = 'all';
@@ -812,8 +847,25 @@ window.delClass = function() {
 
 // ── CALENDAR ──
 function getClsForDate(d) {
-  var dow=d.getDay();
-  return clsList().filter(function(c){return c.dows&&c.dows.indexOf(dow)>=0;});
+  var dow = d.getDay();
+  var dateStr = d.toISOString().slice(0,10);
+  return clsList().filter(function(c){
+    // Check period type
+    var ptype = c.periodType || "always";
+    if(ptype === "dates"){
+      // specific dates mode
+      return (c.specificDates||[]).indexOf(dateStr) >= 0;
+    }
+    // Must match day of week first
+    if(!c.dows || c.dows.indexOf(dow) < 0) return false;
+    if(ptype === "range"){
+      var start = c.dateStart, end = c.dateEnd;
+      if(start && dateStr < start) return false;
+      if(end   && dateStr > end)   return false;
+    }
+    // "always" = no restriction
+    return true;
+  });
 }
 function renderCal() {
   var pg=document.getElementById('pg-calendar');
@@ -874,161 +926,282 @@ window.delStu = function(){
 
 // ── JOURNAL ──
 function renderJournal(){
-  var pg=document.getElementById('pg-journal');
+  var pg=document.getElementById("pg-journal");
   var sorted=jList().slice().sort(function(a,b){return new Date(b.date)-new Date(a.date);});
   var cards=sorted.map(function(j){
     var cids=j.classIds||[];
     var cls2=cids.map(function(id){return D.classes[id];}).filter(Boolean);
     var d=new Date(j.date);
-    var tags=cls2.map(function(c){return '<span class="j-tag" style="background:'+c.color+'30">'+c.name+'</span>';}).join('');
-    tags+='<span class="j-tag" style="background:var(--cream);color:var(--ink3)">'+d.getFullYear()+'.'+pad(d.getMonth()+1)+'.'+pad(d.getDate())+'</span>';
-    return '<div class="j-card ani" onclick="showJd(''+j.id+'')">'
-      +'<div class="j-top"><div class="j-date"><div class="j-day">'+d.getDate()+'</div><div class="j-mon">'+MS[d.getMonth()]+'</div></div>'
-      +'<div class="j-div"></div><div class="j-body"><h4>'+j.title+'</h4><p>'+j.content+'</p><div class="j-tags">'+tags+'</div></div></div></div>';
-  }).join('')||'<div class="empty"><div class="ei">📔</div><p>아직 일기가 없어요.<br>오늘 수업 이야기를 써보세요!</p></div>';
+    var tags=cls2.map(function(c){return "<span class=\"j-tag\" style=\"background:"+c.color+"30\">"+c.name+"</span>";}).join("");
+    tags+="<span class=\"j-tag\" style=\"background:var(--cream);color:var(--ink3)\">"+d.getFullYear()+"."+pad(d.getMonth()+1)+"."+pad(d.getDate())+"</span>";
+    return "<div class=\"j-card ani\" onclick=\"showJd('"+j.id+"')\">"
+      +"<div class=\"j-top\"><div class=\"j-date\"><div class=\"j-day\">"+d.getDate()+"</div><div class=\"j-mon\">"+MS[d.getMonth()]+"</div></div>"
+      +"<div class=\"j-div\"></div><div class=\"j-body\"><h4>"+j.title+"</h4><p>"+j.content+"</p><div class=\"j-tags\">"+tags+"</div></div></div>";
+  }).join("")||"<div class=\"empty\"><div class=\"ei\">📔</div><p>아직 일기가 없어요.<br>오늘 수업 이야기를 써보세요!</p></div>";
   var monthMap={};
   jList().forEach(function(j){var k=new Date(j.date).toISOString().slice(0,7);monthMap[k]=(monthMap[k]||0)+1;});
-  var mItems=Object.entries(monthMap).sort(function(a,b){return b[0].localeCompare(a[0]);}).map(function(e){return '<div class="mitem"><span>'+e[0]+'</span><span>'+e[1]+'개</span></div>';}).join('')||'<p style="font-size:13px;color:var(--ink3)">없음</p>';
-  pg.innerHTML='<div class="j-wrap"><div class="j-list">'+cards+'</div><div><div class="j-sb"><h3>월별 보기</h3>'+mItems+'</div></div></div>';
+  var mItems=Object.entries(monthMap).sort(function(a,b){return b[0].localeCompare(a[0]);}).map(function(e){return "<div class=\"mitem\"><span>"+e[0]+"</span><span>"+e[1]+"개</span></div>";}).join("")||"<p style=\"font-size:13px;color:var(--ink3)\">없음</p>";
+  pg.innerHTML="<div class=\"j-wrap\"><div class=\"j-list\">"+cards+"</div><div><div class=\"j-sb\"><h3>월별 보기</h3>"+mItems+"</div></div></div>";
 }
 window.openJMo = function(){
-  document.getElementById('mo-j-ttl').textContent='일기 쓰기';
-  document.getElementById('mj-id').value='';document.getElementById('mj-title').value='';document.getElementById('mj-content').value='';
-  document.getElementById('mj-date').value=new Date().toISOString().slice(0,10);
-  document.getElementById('mj-del').style.display='none';
-  selJCls=[];renderJChips();openMo('mo-j');
+  document.getElementById("mo-j-ttl").textContent="일기 쓰기";
+  document.getElementById("mj-id").value="";
+  document.getElementById("mj-title").value="";
+  document.getElementById("mj-content").value="";
+  document.getElementById("mj-date").value=new Date().toISOString().slice(0,10);
+  document.getElementById("mj-del").style.display="none";
+  selJCls=[];renderJChips();openMo("mo-j");
 };
 function renderJChips(){
-  document.getElementById('mj-chips').innerHTML=clsList().map(function(c){
+  document.getElementById("mj-chips").innerHTML=clsList().map(function(c){
     var isOn=selJCls.indexOf(c.id)>=0;
-    return '<div class="cls-chip'+(isOn?' on':'')+'" onclick="toggleJCls(''+c.id+'')" style="'+(isOn?'border-color:'+c.color+';background:'+c.color+';color:#fff':'')+'">'+c.name+'</div>';
-  }).join('')||'<p style="font-size:12px;color:var(--ink3)">등록된 수업 없음</p>';
+    var style=isOn?"border-color:"+c.color+";background:"+c.color+";color:#fff":"";
+    return "<div class=\"cls-chip"+(isOn?" on":"")+"\""
+      +" onclick=\"toggleJCls('"+c.id+"')\"" 
+      +" style=\""+style+"\">"+c.name+"</div>";
+  }).join("")||"<p style=\"font-size:12px;color:var(--ink3)\">등록된 수업 없음</p>";
 }
 window.toggleJCls = function(id){var idx=selJCls.indexOf(id);if(idx>=0)selJCls.splice(idx,1);else selJCls.push(id);renderJChips();};
 window.saveJ = function(){
-  var title=document.getElementById('mj-title').value.trim();
-  var content=document.getElementById('mj-content').value.trim();
-  if(!title||!content){toast('제목과 내용을 입력해주세요');return;}
-  var id=document.getElementById('mj-id').value;var newId=id||('j'+Date.now());
+  var title=document.getElementById("mj-title").value.trim();
+  var content=document.getElementById("mj-content").value.trim();
+  if(!title||!content){toast("제목과 내용을 입력해주세요");return;}
+  var id=document.getElementById("mj-id").value;var newId=id||("j"+Date.now());
   var existing=id?D.journals[id]:{};
-  var obj=Object.assign({},existing,{id:newId,title:title,content:content,date:document.getElementById('mj-date').value,classIds:selJCls.slice()});
-  dbSet('journals/'+newId,obj).then(function(){closeMo('mo-j');renderJournal();toast(id?'수정됐어요 ✓':'저장됐어요 ✓');});
+  var obj=Object.assign({},existing,{id:newId,title:title,content:content,date:document.getElementById("mj-date").value,classIds:selJCls.slice()});
+  dbSet("journals/"+newId,obj).then(function(){closeMo("mo-j");renderJournal();toast(id?"수정됐어요 ✓":"저장됐어요 ✓");});
 };
 window.delJ = function(){
-  if(!confirm('일기를 삭제할까요?')) return;
-  var id=document.getElementById('mj-id').value;
-  dbRemove('journals/'+id).then(function(){closeMo('mo-j');renderJournal();toast('삭제됐어요');});
+  if(!confirm("일기를 삭제할까요?")) return;
+  var id=document.getElementById("mj-id").value;
+  dbRemove("journals/"+id).then(function(){closeMo("mo-j");renderJournal();toast("삭제됐어요");});
 };
 window.showJd = function(id){
   var j=D.journals[id];if(!j) return;
   var cids=j.classIds||[];
   var cls2=cids.map(function(id2){return D.classes[id2];}).filter(Boolean);
-  var d=new Date(j.date);var dateStr=d.getFullYear()+'.'+pad(d.getMonth()+1)+'.'+pad(d.getDate());
-  var clsStr=cls2.map(function(c){return '· '+c.name;}).join(' ');
-  document.getElementById('mo-jd-body').innerHTML=
-    '<p style="font-size:12px;color:var(--ink3);margin-bottom:6px;font-family:'Noto Sans KR',sans-serif">'+dateStr+' '+clsStr+'</p>'
-    +'<h2 style="font-size:22px;font-weight:700;margin-bottom:14px;line-height:1.3;font-family:'Noto Sans KR',sans-serif">'+j.title+'</h2>'
-    +'<p style="font-size:14px;line-height:1.9;color:var(--ink2);font-family:'Noto Sans KR',sans-serif">'+j.content.replace(/
-/g,'<br>')+'</p>'
-    +'<div style="margin-top:18px"><button class="btn-s" style="font-size:13px" onclick="editJMo(''+j.id+'');closeMo('mo-jd')">✏️ 편집</button></div>';
-  openMo('mo-jd');
+  var d=new Date(j.date);
+  var dateStr=d.getFullYear()+"."+pad(d.getMonth()+1)+"."+pad(d.getDate());
+  var clsStr=cls2.map(function(c){return "· "+c.name;}).join(" ");
+  document.getElementById("mo-jd-body").innerHTML=
+    "<p style=\"font-size:12px;color:var(--ink3);margin-bottom:6px;font-family:'Noto Sans KR',sans-serif\">"+dateStr+" "+clsStr+"</p>"
+    +"<h2 style=\"font-size:22px;font-weight:700;margin-bottom:14px;line-height:1.3;font-family:'Noto Sans KR',sans-serif\">"+j.title+"</h2>"
+    +"<p style=\"font-size:14px;line-height:1.9;color:var(--ink2);font-family:'Noto Sans KR',sans-serif\">"+j.content.replace(/\n/g,"<br>")+"</p>"
+    +"<div style=\"margin-top:18px\"><button class=\"btn-s\" style=\"font-size:13px\" onclick=\"editJMo('"+id+"');closeMo('mo-jd')\">✏️ 편집</button></div>";
+  openMo("mo-jd");
 };
 window.editJMo = function(id){
   var j=D.journals[id];if(!j) return;
-  document.getElementById('mo-j-ttl').textContent='일기 편집';
-  document.getElementById('mj-id').value=id;document.getElementById('mj-title').value=j.title;
-  document.getElementById('mj-content').value=j.content;document.getElementById('mj-date').value=j.date;
-  document.getElementById('mj-del').style.display='block';
-  selJCls=(j.classIds||[]).slice();renderJChips();openMo('mo-j');
+  document.getElementById("mo-j-ttl").textContent="일기 편집";
+  document.getElementById("mj-id").value=id;
+  document.getElementById("mj-title").value=j.title;
+  document.getElementById("mj-content").value=j.content;
+  document.getElementById("mj-date").value=j.date;
+  document.getElementById("mj-del").style.display="block";
+  selJCls=(j.classIds||[]).slice();renderJChips();openMo("mo-j");
 };
 
 // ── ACCOUNT ──
 function renderAccount(){
-  var prof=D.profile||{};var pg=document.getElementById('pg-account');
-  var name=prof.name||(U?U.email.split('@')[0]:'');
-  pg.innerHTML='<div class="acc-wrap">'
-    +'<div><div class="acc-card"><h3>프로필</h3>'
-    +'<div class="av-wrap"><div class="av-big" id="acc-av-big">'+(prof.avatar?'<img src="'+prof.avatar+'">':name.charAt(0))+'</div>'
-    +'<label class="av-upload" for="acc-file"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>사진 변경</label>'
-    +'<input type="file" id="acc-file" accept="image/*" style="display:none" onchange="uploadAv(this)"></div>'
-    +'<div class="af"><label>이름</label><input type="text" id="acc-name" value="'+(prof.name||'')+'" placeholder="홍길동"></div>'
-    +'<div class="af"><label>과목 / 직함</label><input type="text" id="acc-role" value="'+(prof.role||'')+'" placeholder="예: English Teacher"></div>'
-    +'<div class="af"><label>직장 / 학원명</label><input type="text" id="acc-school" value="'+(prof.school||'')+'" placeholder="예: 분당 영어 학원"></div>'
-    +'<div class="af"><label>전화번호</label><input type="tel" id="acc-phone" value="'+(prof.phone||'')+'" placeholder="010-0000-0000"></div>'
-    +'<div class="af"><label>소개 한 줄</label><input type="text" id="acc-bio" value="'+(prof.bio||'')+'" placeholder="예: 중학교 영어 전문 강사"></div>'
-    +'<button class="btn-p" style="width:100%;justify-content:center;margin-top:16px" onclick="saveProf()"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>프로필 저장</button>'
-    +'</div></div>'
-    +'<div><div class="acc-card"><h3>계정 설정</h3>'
-    +'<div class="af"><label>이메일</label><input type="email" value="'+(U?U.email:'')+'" disabled></div>'
-    +'<div class="af"><label>새 비밀번호</label><input type="password" id="acc-pw1" placeholder="변경할 비밀번호 (6자 이상)"></div>'
-    +'<div class="af"><label>비밀번호 확인</label><input type="password" id="acc-pw2" placeholder="비밀번호 재입력"></div>'
-    +'<button class="btn-s" style="width:100%;margin-top:14px" onclick="changePw()">비밀번호 변경</button></div>'
-    +'<div class="acc-card danger-zone"><h3>위험 구역</h3>'
-    +'<p style="font-size:13px;color:var(--ink3);margin-bottom:14px;line-height:1.7;font-family:'Noto Sans KR',sans-serif">로그아웃하거나 계정을 삭제할 수 있어요.</p>'
-    +'<div style="display:flex;gap:10px">'
-    +'<button class="btn-s" style="flex:1" onclick="logout()">로그아웃</button>'
-    +'<button style="flex:1;padding:9px 14px;background:transparent;color:#e44;border:1.5px solid #e44;border-radius:var(--r-sm);font-size:13px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif" onclick="delAcct()">계정 삭제</button>'
-    +'</div></div></div></div>';
+  var prof=D.profile||{};
+  var pg=document.getElementById("pg-account");
+  var name=prof.name||(U?U.email.split("@")[0]:"");
+  pg.innerHTML="<div class=\"acc-wrap\">"
+    +"<div><div class=\"acc-card\"><h3>프로필</h3>"
+    +"<div class=\"av-wrap\"><div class=\"av-big\" id=\"acc-av-big\">"+(prof.avatar?"<img src=\""+prof.avatar+"\">":name.charAt(0))+"</div>"
+    +"<label class=\"av-upload\" for=\"acc-file\"><svg viewBox=\"0 0 24 24\"><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"/><polyline points=\"17 8 12 3 7 8\"/><line x1=\"12\" y1=\"3\" x2=\"12\" y2=\"15\"/></svg>사진 변경</label>"
+    +"<input type=\"file\" id=\"acc-file\" accept=\"image/*\" style=\"display:none\" onchange=\"uploadAv(this)\"></div>"
+    +"<div class=\"af\"><label>이름</label><input type=\"text\" id=\"acc-name\" value=\""+(prof.name||"")+"\"></div>"
+    +"<div class=\"af\"><label>과목 / 직함</label><input type=\"text\" id=\"acc-role\" value=\""+(prof.role||"")+"\"></div>"
+    +"<div class=\"af\"><label>직장 / 학원명</label><input type=\"text\" id=\"acc-school\" value=\""+(prof.school||"")+"\"></div>"
+    +"<div class=\"af\"><label>전화번호</label><input type=\"tel\" id=\"acc-phone\" value=\""+(prof.phone||"")+"\"></div>"
+    +"<div class=\"af\"><label>소개 한 줄</label><input type=\"text\" id=\"acc-bio\" value=\""+(prof.bio||"")+"\"></div>"
+    +"<button class=\"btn-p\" style=\"width:100%;justify-content:center;margin-top:16px\" onclick=\"saveProf()\"><svg viewBox=\"0 0 24 24\"><path d=\"M20 6 9 17l-5-5\"/></svg>프로필 저장</button>"
+    +"</div></div>"
+    +"<div><div class=\"acc-card\"><h3>계정 설정</h3>"
+    +"<div class=\"af\"><label>이메일</label><input type=\"email\" value=\""+(U?U.email:"")+"\"></div>"
+    +"<div class=\"af\"><label>새 비밀번호</label><input type=\"password\" id=\"acc-pw1\" placeholder=\"변경할 비밀번호 (6자 이상)\"></div>"
+    +"<div class=\"af\"><label>비밀번호 확인</label><input type=\"password\" id=\"acc-pw2\" placeholder=\"비밀번호 재입력\"></div>"
+    +"<button class=\"btn-s\" style=\"width:100%;margin-top:14px\" onclick=\"changePw()\">비밀번호 변경</button></div>"
+    +"<div class=\"acc-card danger-zone\"><h3>위험 구역</h3>"
+    +"<p style=\"font-size:13px;color:var(--ink3);margin-bottom:14px;line-height:1.7;font-family:'Noto Sans KR',sans-serif\">로그아웃하거나 계정을 삭제할 수 있어요.</p>"
+    +"<div style=\"display:flex;gap:10px\">"
+    +"<button class=\"btn-s\" style=\"flex:1\" onclick=\"logout()\">로그아웃</button>"
+    +"<button style=\"flex:1;padding:9px 14px;background:transparent;color:#e44;border:1.5px solid #e44;border-radius:var(--r-sm);font-size:13px;font-weight:500;cursor:pointer\" onclick=\"delAcct()\">계정 삭제</button>"
+    +"</div></div></div></div>";
 }
 window.saveProf = function(){
   var prof={
-    name:document.getElementById('acc-name').value.trim(),
-    role:document.getElementById('acc-role').value.trim(),
-    school:document.getElementById('acc-school').value.trim(),
-    phone:document.getElementById('acc-phone').value.trim(),
-    bio:document.getElementById('acc-bio').value.trim(),
-    avatar:D.profile.avatar||''
+    name:document.getElementById("acc-name").value.trim(),
+    role:document.getElementById("acc-role").value.trim(),
+    school:document.getElementById("acc-school").value.trim(),
+    phone:document.getElementById("acc-phone").value.trim(),
+    bio:document.getElementById("acc-bio").value.trim(),
+    avatar:D.profile.avatar||""
   };
-  dbSet('profile',prof).then(function(){toast('프로필이 저장됐어요 ✓');});
+  dbSet("profile",prof).then(function(){toast("프로필이 저장됐어요 ✓");});
 };
 window.uploadAv = function(input){
   var file=input.files[0];if(!file) return;
   var reader=new FileReader();
   reader.onload=function(e){
     var prof=Object.assign({},D.profile,{avatar:e.target.result});
-    dbSet('profile',prof).then(function(){
-      document.getElementById('acc-av-big').innerHTML='<img src="'+e.target.result+'">';
-      toast('사진이 업데이트됐어요 ✓');
+    dbSet("profile",prof).then(function(){
+      document.getElementById("acc-av-big").innerHTML="<img src=\""+e.target.result+"\">";
+      toast("사진이 업데이트됐어요 ✓");
     });
   };
   reader.readAsDataURL(file);
 };
 window.changePw = function(){
-  var pw1=document.getElementById('acc-pw1').value;
-  var pw2=document.getElementById('acc-pw2').value;
-  if(!pw1){toast('새 비밀번호를 입력해주세요');return;}
-  if(pw1.length<6){toast('6자 이상이어야 해요');return;}
-  if(pw1!==pw2){toast('비밀번호가 일치하지 않아요');return;}
+  var pw1=document.getElementById("acc-pw1").value;
+  var pw2=document.getElementById("acc-pw2").value;
+  if(!pw1){toast("새 비밀번호를 입력해주세요");return;}
+  if(pw1.length<6){toast("6자 이상이어야 해요");return;}
+  if(pw1!==pw2){toast("비밀번호가 일치하지 않아요");return;}
   updatePassword(U,pw1).then(function(){
-    document.getElementById('acc-pw1').value='';
-    document.getElementById('acc-pw2').value='';
-    toast('비밀번호가 변경됐어요 ✓');
-  }).catch(function(){toast('변경 실패: 재로그인 후 시도해주세요');});
+    document.getElementById("acc-pw1").value="";
+    document.getElementById("acc-pw2").value="";
+    toast("비밀번호가 변경됐어요 ✓");
+  }).catch(function(){toast("변경 실패: 재로그인 후 시도해주세요");});
 };
 window.delAcct = function(){
-  if(!confirm('계정을 삭제할까요? 모든 데이터가 삭제됩니다.')) return;
-  if(!confirm('정말 삭제할까요?')) return;
-  dbRemove('').then(function(){U.delete().then(function(){signOut(auth);});});
+  if(!confirm("계정을 삭제할까요? 모든 데이터가 삭제됩니다.")) return;
+  if(!confirm("정말 삭제할까요?")) return;
+  dbRemove("").then(function(){U.delete().then(function(){signOut(auth);});});
 };
 
 // ── MODAL UTILS ──
-window.openMo = function(id){document.getElementById(id).classList.add('on');};
-window.closeMo = function(id){document.getElementById(id).classList.remove('on');};
+window.openMo = function(id){document.getElementById(id).classList.add("on");};
+window.closeMo = function(id){document.getElementById(id).classList.remove("on");};
 window.moOut = function(e,id){if(e.target.id===id)closeMo(id);};
-window.pickC = function(el){document.querySelectorAll('.cdot').forEach(function(d){d.classList.remove('on');});el.classList.add('on');selColor=el.dataset.c;};
-window.toggleDow = function(btn){btn.classList.toggle('on');};
+window.pickC = function(el){document.querySelectorAll(".cdot").forEach(function(d){d.classList.remove("on");});el.classList.add("on");selColor=el.dataset.c;};
+window.toggleDow = function(btn){btn.classList.toggle("on");};
 
 // ── TOAST ──
 var toastT;
 window.toast = function(msg){
-  var el=document.getElementById('toast');
-  el.textContent=msg;el.classList.add('on');
-  clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove('on');},2200);
+  var el=document.getElementById("toast");
+  el.textContent=msg;el.classList.add("on");
+  clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove("on");},2200);
 };
 
 // Enter key
-document.getElementById('li-pw').addEventListener('keydown',function(e){if(e.key==='Enter')window.login();});
-document.getElementById('li-email').addEventListener('keydown',function(e){if(e.key==='Enter')window.login();});
+document.getElementById("li-pw").addEventListener("keydown",function(e){if(e.key==="Enter")window.login();});
+document.getElementById("li-email").addEventListener("keydown",function(e){if(e.key==="Enter")window.login();});
+
+// ── GOOGLE LOGIN ──
+window.loginGoogle = function(){
+  var provider = new GoogleAuthProvider();
+  signInWithPopup(auth, provider).catch(function(e){
+    document.getElementById("li-msg").textContent = "Google 로그인 실패: " + e.message;
+  });
+};
+
+// ── PASSWORD RESET ──
+window.resetPw = function(){
+  var email = document.getElementById("li-email").value.trim();
+  var msg = document.getElementById("li-msg");
+  if(!email){ msg.textContent="이메일을 먼저 입력해주세요."; return; }
+  sendPasswordResetEmail(auth, email).then(function(){
+    msg.style.color="#2a2";
+    msg.textContent="재설정 이메일을 보냈어요. 받은편지함을 확인해주세요!";
+  }).catch(function(e){
+    msg.style.color="#e44";
+    msg.textContent="전송 실패: 이메일 주소를 확인해주세요.";
+  });
+};
+
+// ── PERIOD TAB ──
+window.switchPeriodTab = function(tab){
+  periodTab = tab;
+  ["range","dates","always"].forEach(function(t){
+    var el = document.getElementById("period-"+t);
+    var btn = document.getElementById("pt-"+t);
+    if(el) el.style.display = t===tab ? "block" : "none";
+    if(btn){
+      btn.style.background = t===tab ? "var(--ink)" : "var(--cream)";
+      btn.style.color = t===tab ? "#fff" : "var(--ink2)";
+    }
+  });
+};
+
+window.addSpecificDate = function(){
+  var d = document.getElementById("mc-single-date").value;
+  if(!d) return;
+  if(specificDates.indexOf(d) < 0){
+    specificDates.push(d);
+    specificDates.sort();
+  }
+  renderSpecificDates();
+  document.getElementById("mc-single-date").value = "";
+};
+
+function renderSpecificDates(){
+  var el = document.getElementById("mc-dates-list");
+  if(!el) return;
+  el.innerHTML = specificDates.map(function(d, i){
+    return "<span style=\"display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:var(--cream);border:1.5px solid var(--border);border-radius:20px;font-size:12px;font-family:'Noto Sans KR',sans-serif;\">"
+      + d
+      + "<button type=\"button\" onclick=\"removeDate("+i+")\" style=\"background:none;border:none;cursor:pointer;color:var(--ink3);font-size:14px;line-height:1;padding:0 2px;\">×</button></span>";
+  }).join("");
+}
+
+window.removeDate = function(i){
+  specificDates.splice(i,1);
+  renderSpecificDates();
+};
+
+// ── UPDATE openClassMo & editClassMo to handle period ──
+var _origOpenClassMo = window.openClassMo;
+window.openClassMo = function(){
+  _origOpenClassMo();
+  specificDates = [];
+  document.getElementById("mc-date-start").value = "";
+  document.getElementById("mc-date-end").value = "";
+  renderSpecificDates();
+  switchPeriodTab("range");
+};
+
+var _origEditClassMo = window.editClassMo;
+window.editClassMo = function(id){
+  _origEditClassMo(id);
+  var c = D.classes[id]; if(!c) return;
+  specificDates = (c.specificDates||[]).slice();
+  document.getElementById("mc-date-start").value = c.dateStart||"";
+  document.getElementById("mc-date-end").value = c.dateEnd||"";
+  renderSpecificDates();
+  var tab = c.periodType||"range";
+  switchPeriodTab(tab);
+};
+
+// ── UPDATE saveClass to save period ──
+var _origSaveClass = window.saveClass;
+window.saveClass = function(){
+  var name = document.getElementById("mc-name").value.trim();
+  if(!name){toast("수업 이름을 입력해주세요");return;}
+  var id = document.getElementById("mc-id").value;
+  var dows = getDows();
+  var ts = document.getElementById("mc-ts").value;
+  var te = document.getElementById("mc-te").value;
+  var newId = id||("c"+Date.now());
+  var existing = id?D.classes[id]:{};
+  var obj = Object.assign({},existing,{
+    id:newId, name:name, schedule:buildSchedule(dows,ts,te),
+    room:document.getElementById("mc-room").value.trim(),
+    overview:document.getElementById("mc-ov").value.trim(),
+    color:selColor, dows:dows,
+    todos:existing.todos||[], files:existing.files||[], notes:existing.notes||"",
+    periodType: periodTab,
+    dateStart: periodTab==="range" ? document.getElementById("mc-date-start").value : "",
+    dateEnd:   periodTab==="range" ? document.getElementById("mc-date-end").value : "",
+    specificDates: periodTab==="dates" ? specificDates.slice() : []
+  });
+  dbSet("classes/"+newId, obj).then(function(){
+    closeMo("mo-class"); renderClasses();
+    toast(id?"수업이 수정됐어요 ✓":"수업이 추가됐어요 ✓");
+  });
+};
 
 </script>
 </body>
